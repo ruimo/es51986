@@ -2,6 +2,11 @@
 name = "es51986"
 version = "0.1.0"
 edition = "2021"
+description = "ES51986 data decoder library."
+license = "Apache-2.0"
+documentation = "https://github.com/ruimo/es51986"
+homepage = "https://github.com/ruimo/es51986"
+repository = "https://github.com/ruimo/es51986"
 
 [dependencies]
 env_logger = "0.11.5"
