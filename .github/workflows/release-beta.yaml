@@ -24,4 +24,4 @@ jobs:
         git config --global user.name "Shisei Hanai"
         cargo login ${{ secrets.ES51986 }}
         git status
-        cargo release -vv beta --execute --no-confirm --features persistence
+        cargo release -vv beta --execute --no-confirm
