@@ -117,7 +117,7 @@ impl Parser {
     /// let mut parser = es51986::parser::Parser::new();
     /// let input: Vec<u8> = "01".chars().map(|c| c as u8).collect();
     /// let results = parser.parse(&input);
-    //  assert_eq!(results.len(), 0); // Data is not completed yet.
+    ///  assert_eq!(results.len(), 0); // Data is not completed yet.
     /// let input: Vec<u8> = "234;<0:\r\n".chars().map(|c| c as u8).collect();
     /// let results = parser.parse(&input);
     /// assert_eq!(results.len(), 1);
