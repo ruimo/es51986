@@ -37,7 +37,14 @@ impl Parser {
             ParserState::Idle => {
                 if ch == CR {
                     self.state = ParserState::FoundCr;
-                    Ok(None)
+                    let result = Output::parse(&self.buf);
+                    self.buf.clear();
+                    result.map(|o| Some(o))
+                } else if ch == LF {
+                    self.state = ParserState::Idle;
+                    let result = Output::parse(&self.buf);
+                    self.buf.clear();
+                    result.map(|o| Some(o))
                 } else {
                     self.buf.push(ch);
                     let len = self.buf.len();
@@ -52,14 +59,12 @@ impl Parser {
             }
             ParserState::FoundCr => {
                 if ch == LF {
-                    let result = Output::parse(&self.buf);
                     self.buf.clear();
-                    result.map(|o| Some(o))
+                    Ok(None)
                 } else {
-                    self.buf.clear();
                     self.buf.push(ch);
                     self.state = ParserState::Idle;
-                    Err(ParseError::NoLfAfterCr)
+                    Ok(None)
                 }
             }
         }

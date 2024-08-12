@@ -664,4 +664,49 @@ mod tests {
         assert_eq!(&out.digits.to_value(DigitRadix::Zero), "1");
         assert_eq!(out.get_value(), Some(OutputValue { digits: "0.001".to_owned(), value_unit: ValueUnit { prefix_unit: PrefixUnit::None, base_unit: BaseUnit::Ampere}}));
     }
+
+    #[test]
+    fn only_cr() {
+        let inp: Vec<u8> = to_u8("000019808\r000019808\r");
+        let results: Vec<Result<Output, ParseError>> = Parser::new().parse(&inp);
+        assert_eq!(results.len(), 2);
+        let out: &Output = results[0].as_ref().unwrap();
+        assert_eq!(out.status, Status { temperature_unit: TemperatureUnit::Celsius, sign: SIGN_PLUS, is_battery_depleted: false, is_overflow: false });
+        assert_eq!(out.function, Function::ManualAmpere);
+        assert_eq!(out.range, Range::Range0);
+        assert_eq!(out.option2, Option2 { is_dc: true, is_ac: false, is_auto: false });
+        assert_eq!(&out.digits.to_value(DigitRadix::Zero), "1");
+        assert_eq!(out.get_value(), Some(OutputValue { digits: "0.001".to_owned(), value_unit: ValueUnit { prefix_unit: PrefixUnit::None, base_unit: BaseUnit::Ampere}}));
+        assert_eq!(results[0].as_ref(), results[1].as_ref());
+    }
+
+    #[test]
+    fn crlf() {
+        let inp: Vec<u8> = to_u8("000019808\r\n000019808\r\n");
+        let results: Vec<Result<Output, ParseError>> = Parser::new().parse(&inp);
+        assert_eq!(results.len(), 2);
+        let out: &Output = results[0].as_ref().unwrap();
+        assert_eq!(out.status, Status { temperature_unit: TemperatureUnit::Celsius, sign: SIGN_PLUS, is_battery_depleted: false, is_overflow: false });
+        assert_eq!(out.function, Function::ManualAmpere);
+        assert_eq!(out.range, Range::Range0);
+        assert_eq!(out.option2, Option2 { is_dc: true, is_ac: false, is_auto: false });
+        assert_eq!(&out.digits.to_value(DigitRadix::Zero), "1");
+        assert_eq!(out.get_value(), Some(OutputValue { digits: "0.001".to_owned(), value_unit: ValueUnit { prefix_unit: PrefixUnit::None, base_unit: BaseUnit::Ampere}}));
+        assert_eq!(results[0].as_ref(), results[1].as_ref());
+    }
+
+    #[test]
+    fn only_lf() {
+        let inp: Vec<u8> = to_u8("000019808\n000019808\n");
+        let results: Vec<Result<Output, ParseError>> = Parser::new().parse(&inp);
+        assert_eq!(results.len(), 2);
+        let out: &Output = results[0].as_ref().unwrap();
+        assert_eq!(out.status, Status { temperature_unit: TemperatureUnit::Celsius, sign: SIGN_PLUS, is_battery_depleted: false, is_overflow: false });
+        assert_eq!(out.function, Function::ManualAmpere);
+        assert_eq!(out.range, Range::Range0);
+        assert_eq!(out.option2, Option2 { is_dc: true, is_ac: false, is_auto: false });
+        assert_eq!(&out.digits.to_value(DigitRadix::Zero), "1");
+        assert_eq!(out.get_value(), Some(OutputValue { digits: "0.001".to_owned(), value_unit: ValueUnit { prefix_unit: PrefixUnit::None, base_unit: BaseUnit::Ampere}}));
+        assert_eq!(results[0].as_ref(), results[1].as_ref());
+    }
 }
