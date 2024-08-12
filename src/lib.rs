@@ -180,8 +180,8 @@ pub enum BaseUnit {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ValueUnit {
-    prefix_unit: PrefixUnit,
-    base_unit: BaseUnit,
+    pub prefix_unit: PrefixUnit,
+    pub base_unit: BaseUnit,
 }
 
 impl ValueUnit {

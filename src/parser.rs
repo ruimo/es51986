@@ -80,7 +80,66 @@ impl Parser {
             }
         }
     }
-
+    
+    /// Supply the data to the parser.
+    ///
+    /// The data to the parser is 11 bytes long that ends with CR (0x0d), LF (0x0a). 11 bytes may be given as a whole but you can supply smaller pieces (less than 11 bytes), or data exceeding 11 bytes may be given.
+    ///
+    /// # Argument
+    /// 
+    /// * 'input' - Data to parse.
+    /// 
+    ///
+    /// # Return value
+    /// 
+    /// Vector of parsed result.
+    /// 
+    /// # Examples
+    ///
+    /// Simple case.
+    /// ```
+    /// use es51986::{PrefixUnit, ValueUnit, BaseUnit};
+    /// 
+    /// let mut parser = es51986::parser::Parser::new();
+    /// let input: Vec<u8> = "00000;<0:\r\n".chars().map(|c| c as u8).collect();
+    /// let results = parser.parse(&input);
+    /// assert_eq!(results.len(), 1);
+    /// let output = results[0].as_ref().unwrap();
+    /// let value = output.get_value().unwrap();
+    /// assert_eq!(&value.digits, "0.000");
+    /// assert_eq!(value.value_unit, ValueUnit { prefix_unit: PrefixUnit::None, base_unit: BaseUnit::Volt});
+    /// ```
+    ///
+    /// You can supply smaller chunks of data.
+    /// ```
+    /// use es51986::{PrefixUnit, ValueUnit, BaseUnit};
+    /// 
+    /// let mut parser = es51986::parser::Parser::new();
+    /// let input: Vec<u8> = "01".chars().map(|c| c as u8).collect();
+    /// let results = parser.parse(&input);
+    //  assert_eq!(results.len(), 0); // Data is not completed yet.
+    /// let input: Vec<u8> = "234;<0:\r\n".chars().map(|c| c as u8).collect();
+    /// let results = parser.parse(&input);
+    /// assert_eq!(results.len(), 1);
+    /// let output = results[0].as_ref().unwrap();
+    /// let value = output.get_value().unwrap();
+    /// assert_eq!(&value.digits, "1.234");
+    /// assert_eq!(value.value_unit, ValueUnit { prefix_unit: PrefixUnit::None, base_unit: BaseUnit::Volt});
+    /// ```
+    /// You can supply larger data that contains multiple data.
+    /// ```
+    /// use es51986::{PrefixUnit, ValueUnit, BaseUnit};
+    /// 
+    /// let mut parser = es51986::parser::Parser::new();
+    /// let input: Vec<u8> = "00000;<0:\r\n00000;<0:\r\n".chars().map(|c| c as u8).collect();
+    /// let results = parser.parse(&input);
+    /// assert_eq!(results.len(), 2);
+    /// let output = results[0].as_ref().unwrap();
+    /// let value = output.get_value().unwrap();
+    /// assert_eq!(&value.digits, "0.000");
+    /// assert_eq!(value.value_unit, ValueUnit { prefix_unit: PrefixUnit::None, base_unit: BaseUnit::Volt});
+    /// assert_eq!(results[0].as_ref().unwrap(), results[1].as_ref().unwrap());
+    /// ```
     pub fn parse(&mut self, input: &[u8]) -> Vec<Result<Output, ParseError>> {
         let mut results: Vec<Result<Output, ParseError>> = vec![];
         for ch in input.iter() {
