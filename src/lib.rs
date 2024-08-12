@@ -1,8 +1,9 @@
 use parser::ParseError;
+use serde::{Deserialize, Serialize};
 
 pub mod parser;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Range {
     Range0,
     Range1,
@@ -28,7 +29,7 @@ impl Range {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Function {
     Voltage,
     MicroAmpere,
@@ -70,13 +71,13 @@ impl Function {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum TemperatureUnit {
     Celsius,
     Fahrenheit,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Sign(bool);
 
 pub const SIGN_PLUS: Sign = Sign(false);
@@ -122,7 +123,7 @@ impl Into<i128> for Sign {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Status {
     pub temperature_unit: TemperatureUnit,
     pub sign: Sign,
@@ -141,7 +142,7 @@ impl Status {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Option2 {
     pub is_dc: bool,
     pub is_ac: bool,
@@ -158,7 +159,7 @@ impl Option2 {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum PrefixUnit {
     Mega,
     Kilo,
@@ -168,7 +169,7 @@ pub enum PrefixUnit {
     Nano,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum BaseUnit {
     Ampere,
     Volt,
@@ -177,7 +178,7 @@ pub enum BaseUnit {
     Farad,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ValueUnit {
     prefix_unit: PrefixUnit,
     base_unit: BaseUnit,
@@ -191,11 +192,12 @@ impl ValueUnit {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Digits {
     digits: [u8; 4],
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum DigitRadix {
     Zero,
     Minus1,
@@ -243,7 +245,7 @@ impl Digits {
 
 const OUTPUT_LENGTH: usize = 9;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Output {
     pub range: Range,
     pub digits: Digits,
@@ -252,7 +254,7 @@ pub struct Output {
     pub option2: Option2,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct OutputValue {
     pub digits: String,
     pub value_unit: ValueUnit,
@@ -529,7 +531,7 @@ mod tests {
     }
 
     #[test]
-    fn capasitance() {
+    fn capacitance() {
         let inp: Vec<u8> = to_u8("660006902\r\n");
         let results: Vec<Result<Output, ParseError>> = Parser::new().parse(&inp);
         assert_eq!(results.len(), 1);

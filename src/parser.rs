@@ -1,13 +1,24 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{Output, OUTPUT_LENGTH};
 
-#[derive(Debug, Clone, PartialEq)]
+/// Parse errors
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum ParseError {
+    /// Length error. ES51986's data is 9 byte long followed by CRLF characters.
+    /// If the length is wrong, this error will be returned.
     LengthError {
+        /// The length detected. If the data was '1234567890\r\n' then this 'len' will become 10.
         len: usize
     },
-    NoLfAfterCr,
+    /// The first byte of the data is range. If the range byte is invalid, this error will be returned.
+    /// The u8 data is actual data byte.
     InvalidRange(u8),
+    /// The 5th byte of the data is function. If the function is invalid, this error will be returned.
+    /// The u8 data is actual data byte.
     InvalidFunction(u8),
+    /// The 1-4 byte of the data is digits. If the digits is invalid, this error will be returned.
+    /// The u8 data is actual data byte.
     InvalidDigit(u8),
 }
 
