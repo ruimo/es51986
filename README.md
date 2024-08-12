@@ -4,3 +4,14 @@
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 
 # ES51986 data decode library
+
+## How to use
+
+Please look into the [Parser's API doc](https://docs.rs/es51986/0.1.3/es51986/parser/struct.Parser.html)
+
+## Examples
+
+The examples are under 'examples' directory. You can run each example specifying the directory name.
+
+    cargo run --example simple
+    
